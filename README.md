@@ -25,23 +25,23 @@ This app follows **SOLID principles** and uses **BloC (Business Logic Component)
 ## Screenshots
 
 ### Restaurant List Screen
-![Restaurant List](screenshots/restaurant_list.jpg)
+<img src="screenshots/restaurant_list.jpg" alt="Restaurant List" width="300"/>
 *Browse available restaurants with category filtering*
 
 ### Restaurant Menu Screen
-![Restaurant Menu](screenshots/restaurant_menu.jpg)
+<img src="screenshots/restaurant_menu.jpg" alt="Restaurant Menu" width="300"/>
 *View menu items and add to cart*
 
 ### Shopping Cart Screen
-![Shopping Cart](screenshots/cart.jpg)
+<img src="screenshots/cart.jpg" alt="Shopping Cart" width="300"/>
 *Manage cart items and quantities*
 
 ### Checkout Screen
-![Checkout](screenshots/checkout.jpg)
+<img src="screenshots/checkout.jpg" alt="Checkout" width="300"/>
 *Enter delivery information and place order*
 
 ### Order Confirmation Screen
-![Order Confirmation](screenshots/order_confirmation.jpg)
+<img src="screenshots/order_confirmation.jpg" alt="Order Confirmation" width="300"/>
 *Order confirmation with tracking details*
 
 ## Getting Started
@@ -176,4 +176,3 @@ The app includes comprehensive unit tests covering:
 3. Make your changes
 4. Add tests for new functionality
 5. Submit a pull request
-
