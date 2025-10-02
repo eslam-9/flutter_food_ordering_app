@@ -1,8 +1,8 @@
+import 'package:assigment/bloc/route_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'bloc/food_ordering_bloc.dart';
-import 'navigation/route_generator.dart';
 
 void main() {
   runApp(const FoodOrderingApp());

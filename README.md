@@ -25,23 +25,23 @@ This app follows **SOLID principles** and uses **BloC (Business Logic Component)
 ## Screenshots
 
 ### Restaurant List Screen
-![Restaurant List](screenshots/restaurant_list.png)
+![Restaurant List](screenshots/restaurant_list.jpg)
 *Browse available restaurants with category filtering*
 
 ### Restaurant Menu Screen
-![Restaurant Menu](screenshots/restaurant_menu.png)
+![Restaurant Menu](screenshots/restaurant_menu.jpg)
 *View menu items and add to cart*
 
 ### Shopping Cart Screen
-![Shopping Cart](screenshots/cart.png)
+![Shopping Cart](screenshots/cart.jpg)
 *Manage cart items and quantities*
 
 ### Checkout Screen
-![Checkout](screenshots/checkout.png)
+![Checkout](screenshots/checkout.jpg)
 *Enter delivery information and place order*
 
 ### Order Confirmation Screen
-![Order Confirmation](screenshots/order_confirmation.png)
+![Order Confirmation](screenshots/order_confirmation.jpg)
 *Order confirmation with tracking details*
 
 ## Getting Started
