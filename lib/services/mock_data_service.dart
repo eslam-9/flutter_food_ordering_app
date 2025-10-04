@@ -8,8 +8,7 @@ class MockDataService {
         id: '1',
         name: 'Pizza Palace',
         description: 'Authentic Italian pizza with fresh ingredients',
-        imageUrl:
-            'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400',
+        imageUrl: 'https://picsum.photos/400/300?random=1',
         rating: 4.5,
         reviewCount: 1247,
         cuisine: 'Italian',
@@ -22,8 +21,7 @@ class MockDataService {
             name: 'Margherita Pizza',
             description: 'Fresh mozzarella, tomato sauce, and basil',
             price: 12.99,
-            imageUrl:
-                'https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=300',
+            imageUrl: 'https://picsum.photos/300/200?random=2',
             category: 'Pizza',
             isVegetarian: true,
             preparationTime: 20,
@@ -33,8 +31,7 @@ class MockDataService {
             name: 'Pepperoni Pizza',
             description: 'Classic pepperoni with mozzarella cheese',
             price: 14.99,
-            imageUrl:
-                'https://images.unsplash.com/photo-1628840042765-356cda07504e?w=300',
+            imageUrl: 'https://picsum.photos/300/200?random=3',
             category: 'Pizza',
             preparationTime: 20,
           ),
@@ -43,8 +40,7 @@ class MockDataService {
             name: 'Caesar Salad',
             description: 'Fresh romaine lettuce with caesar dressing',
             price: 8.99,
-            imageUrl:
-                'https://images.unsplash.com/photo-1546793665-c74683f339c1?w=300',
+            imageUrl: 'https://picsum.photos/300/200?random=4',
             category: 'Salad',
             isVegetarian: true,
             preparationTime: 10,
@@ -55,8 +51,7 @@ class MockDataService {
         id: '2',
         name: 'Burger Junction',
         description: 'Gourmet burgers made with premium beef',
-        imageUrl:
-            'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400',
+        imageUrl: 'https://picsum.photos/400/300?random=5',
         rating: 4.3,
         reviewCount: 892,
         cuisine: 'American',
@@ -69,8 +64,7 @@ class MockDataService {
             name: 'Classic Cheeseburger',
             description: 'Beef patty with cheese, lettuce, tomato, and onion',
             price: 9.99,
-            imageUrl:
-                'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300',
+            imageUrl: 'https://picsum.photos/300/200?random=6',
             category: 'Burger',
             preparationTime: 15,
           ),
@@ -79,8 +73,7 @@ class MockDataService {
             name: 'Bacon Burger',
             description: 'Beef patty with crispy bacon and cheese',
             price: 11.99,
-            imageUrl:
-                'https://images.unsplash.com/photo-1553979459-d2229ba7433a?w=300',
+            imageUrl: 'https://picsum.photos/300/200?random=7',
             category: 'Burger',
             preparationTime: 15,
           ),
@@ -89,8 +82,7 @@ class MockDataService {
             name: 'French Fries',
             description: 'Crispy golden french fries',
             price: 4.99,
-            imageUrl:
-                'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=300',
+            imageUrl: 'https://picsum.photos/300/200?random=8',
             category: 'Sides',
             isVegetarian: true,
             preparationTime: 8,
@@ -101,8 +93,7 @@ class MockDataService {
         id: '3',
         name: 'Sushi Zen',
         description: 'Fresh sushi and Japanese cuisine',
-        imageUrl:
-            'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=400',
+        imageUrl: 'https://picsum.photos/400/300?random=9',
         rating: 4.7,
         reviewCount: 1563,
         cuisine: 'Japanese',
@@ -115,8 +106,7 @@ class MockDataService {
             name: 'California Roll',
             description: 'Crab, avocado, and cucumber roll',
             price: 8.99,
-            imageUrl:
-                'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=300',
+            imageUrl: 'https://picsum.photos/300/200?random=10',
             category: 'Sushi',
             preparationTime: 12,
           ),
@@ -125,8 +115,7 @@ class MockDataService {
             name: 'Salmon Nigiri',
             description: 'Fresh salmon over seasoned rice',
             price: 12.99,
-            imageUrl:
-                'https://images.unsplash.com/photo-1563612116625-3012372fccce?w=300',
+            imageUrl: 'https://picsum.photos/300/200?random=11',
             category: 'Sushi',
             preparationTime: 10,
           ),
@@ -135,8 +124,7 @@ class MockDataService {
             name: 'Miso Soup',
             description: 'Traditional Japanese miso soup',
             price: 3.99,
-            imageUrl:
-                'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=300',
+            imageUrl: 'https://picsum.photos/300/200?random=12',
             category: 'Soup',
             isVegetarian: true,
             preparationTime: 5,
@@ -147,8 +135,7 @@ class MockDataService {
         id: '4',
         name: 'Taco Fiesta',
         description: 'Authentic Mexican tacos and burritos',
-        imageUrl:
-            'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400',
+        imageUrl: 'https://picsum.photos/400/300?random=13',
         rating: 4.2,
         reviewCount: 743,
         cuisine: 'Mexican',
@@ -161,8 +148,7 @@ class MockDataService {
             name: 'Chicken Tacos',
             description: 'Three soft tacos with grilled chicken',
             price: 7.99,
-            imageUrl:
-                'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300',
+            imageUrl: 'https://picsum.photos/300/200?random=14',
             category: 'Tacos',
             preparationTime: 12,
           ),
@@ -171,8 +157,7 @@ class MockDataService {
             name: 'Beef Burrito',
             description: 'Large burrito with seasoned beef and rice',
             price: 9.99,
-            imageUrl:
-                'https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=300',
+            imageUrl: 'https://picsum.photos/300/200?random=15',
             category: 'Burrito',
             preparationTime: 15,
           ),
@@ -181,8 +166,7 @@ class MockDataService {
             name: 'Guacamole',
             description: 'Fresh homemade guacamole',
             price: 4.99,
-            imageUrl:
-                'https://images.unsplash.com/photo-1551782450-17144efb9c50?w=300',
+            imageUrl: 'https://picsum.photos/300/200?random=16',
             category: 'Sides',
             isVegetarian: true,
             preparationTime: 8,

@@ -3,8 +3,6 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:assigment/bloc/food_ordering_bloc.dart';
 import 'package:assigment/bloc/food_ordering_event.dart';
 import 'package:assigment/bloc/food_ordering_state.dart';
-import 'package:assigment/models/food_item.dart';
-import 'package:assigment/models/restaurant.dart';
 import 'package:assigment/models/cart_item.dart';
 import 'package:assigment/services/mock_data_service.dart';
 

@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../bloc/food_ordering_bloc.dart';
 import '../bloc/food_ordering_event.dart';
 import '../bloc/food_ordering_state.dart';
+import '../widgets/stripe_payment_form.dart';
 import 'order_confirmation_screen.dart';
 
 class CheckoutScreen extends StatefulWidget {
@@ -18,6 +19,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
   final _addressController = TextEditingController();
+
+  String _selectedPaymentMethod = 'cash'; // 'cash' or 'stripe'
+  bool _showStripeForm = false;
 
   @override
   void dispose() {
@@ -50,6 +54,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               context,
               MaterialPageRoute(
                 builder: (context) => const OrderConfirmationScreen(),
+              ),
+            );
+          } else if (state.status == FoodOrderingStatus.paymentSuccessful) {
+            // Payment successful, now place the order
+            context.read<FoodOrderingBloc>().add(
+              PlaceOrder(
+                customerName: _nameController.text,
+                customerPhone: _phoneController.text,
+                deliveryAddress: _addressController.text,
+                paymentMethodId: state.paymentMethodId,
+                useStripePayment: true,
               ),
             );
           } else if (state.status == FoodOrderingStatus.error) {
@@ -123,6 +138,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     _buildDeliveryInfo(),
                     const SizedBox(height: 24),
                     _buildPaymentInfo(),
+                    if (_showStripeForm) ...[
+                      const SizedBox(height: 16),
+                      _buildStripePaymentForm(),
+                    ],
                     const SizedBox(height: 32),
                     _buildPlaceOrderButton(state),
                   ],
@@ -362,53 +381,169 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   }
 
   Widget _buildPaymentInfo() {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Payment Method',
-              style: GoogleFonts.poppins(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey[300]!),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.payment, color: Colors.orange[600], size: 24),
-                  const SizedBox(width: 12),
-                  Text(
-                    'Cash on Delivery',
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+    return BlocBuilder<FoodOrderingBloc, FoodOrderingState>(
+      builder: (context, state) {
+        return Card(
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Payment Method',
+                  style: GoogleFonts.poppins(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                GestureDetector(
+                  onTap: () {
+                    context.read<FoodOrderingBloc>().add(
+                      const SelectPaymentMethod(PaymentMethod.cashOnDelivery),
+                    );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color:
+                          state.selectedPaymentMethod ==
+                              PaymentMethod.cashOnDelivery
+                          ? Colors.orange[50]
+                          : Colors.grey[100],
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color:
+                            state.selectedPaymentMethod ==
+                                PaymentMethod.cashOnDelivery
+                            ? Colors.orange[600]!
+                            : Colors.grey[300]!,
+                        width:
+                            state.selectedPaymentMethod ==
+                                PaymentMethod.cashOnDelivery
+                            ? 2
+                            : 1,
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.payment,
+                          color: Colors.orange[600],
+                          size: 24,
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          'Cash on Delivery',
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const Spacer(),
+                        Icon(
+                          state.selectedPaymentMethod ==
+                                  PaymentMethod.cashOnDelivery
+                              ? Icons.check_circle
+                              : Icons.radio_button_unchecked,
+                          color:
+                              state.selectedPaymentMethod ==
+                                  PaymentMethod.cashOnDelivery
+                              ? Colors.green[600]
+                              : Colors.grey[400],
+                          size: 20,
+                        ),
+                      ],
                     ),
                   ),
-                  const Spacer(),
-                  Icon(Icons.check_circle, color: Colors.green[600], size: 20),
-                ],
-              ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Pay when your order arrives',
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    color: Colors.grey[600],
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                GestureDetector(
+                  onTap: () {
+                    context.read<FoodOrderingBloc>().add(
+                      const SelectPaymentMethod(PaymentMethod.mastercard),
+                    );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color:
+                          state.selectedPaymentMethod ==
+                              PaymentMethod.mastercard
+                          ? Colors.orange[50]
+                          : Colors.grey[100],
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color:
+                            state.selectedPaymentMethod ==
+                                PaymentMethod.mastercard
+                            ? Colors.orange[600]!
+                            : Colors.grey[300]!,
+                        width:
+                            state.selectedPaymentMethod ==
+                                PaymentMethod.mastercard
+                            ? 2
+                            : 1,
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.credit_card,
+                          color: Colors.orange[600],
+                          size: 24,
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          'Mastercard',
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const Spacer(),
+                        Icon(
+                          state.selectedPaymentMethod ==
+                                  PaymentMethod.mastercard
+                              ? Icons.check_circle
+                              : Icons.radio_button_unchecked,
+                          color:
+                              state.selectedPaymentMethod ==
+                                  PaymentMethod.mastercard
+                              ? Colors.green[600]
+                              : Colors.grey[400],
+                          size: 20,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Pay securely with Stripe',
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 8),
-            Text(
-              'Pay when your order arrives',
-              style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[600]),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -416,7 +551,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: state.status == FoodOrderingStatus.loading
+        onPressed:
+            state.status == FoodOrderingStatus.loading ||
+                state.status == FoodOrderingStatus.processingPayment
             ? null
             : () {
                 if (_formKey.currentState!.validate()) {
@@ -425,6 +562,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       customerName: _nameController.text,
                       customerPhone: _phoneController.text,
                       deliveryAddress: _addressController.text,
+                      paymentMethod: state.selectedPaymentMethod,
                     ),
                   );
                 }
@@ -434,7 +572,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           padding: const EdgeInsets.symmetric(vertical: 16),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
-        child: state.status == FoodOrderingStatus.loading
+        child:
+            state.status == FoodOrderingStatus.loading ||
+                state.status == FoodOrderingStatus.processingPayment
             ? const SizedBox(
                 height: 20,
                 width: 20,
@@ -444,7 +584,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 ),
               )
             : Text(
-                'Place Order',
+                state.selectedPaymentMethod == PaymentMethod.mastercard
+                    ? 'Pay with Stripe'
+                    : 'Place Order',
                 style: GoogleFonts.poppins(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,

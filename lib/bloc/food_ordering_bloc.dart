@@ -1,8 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import '../models/order.dart';
 import '../models/cart_item.dart';
 import '../models/restaurant.dart';
 import '../services/mock_data_service.dart';
+import '../services/stripe_service.dart';
 import 'food_ordering_event.dart';
 import 'food_ordering_state.dart';
 
@@ -15,7 +17,9 @@ class FoodOrderingBloc extends Bloc<FoodOrderingEvent, FoodOrderingState> {
     on<RemoveFromCart>(_onRemoveFromCart);
     on<UpdateCartItemQuantity>(_onUpdateCartItemQuantity);
     on<ClearCart>(_onClearCart);
+    on<SelectPaymentMethod>(_onSelectPaymentMethod);
     on<PlaceOrder>(_onPlaceOrder);
+    on<ProcessStripePayment>(_onProcessStripePayment);
     on<UpdateOrderStatus>(_onUpdateOrderStatus);
     on<NavigateToRestaurantMenu>(_onNavigateToRestaurantMenu);
     on<NavigateToCart>(_onNavigateToCart);
@@ -140,6 +144,13 @@ class FoodOrderingBloc extends Bloc<FoodOrderingEvent, FoodOrderingState> {
     emit(state.copyWith(cartItems: []));
   }
 
+  void _onSelectPaymentMethod(
+    SelectPaymentMethod event,
+    Emitter<FoodOrderingState> emit,
+  ) {
+    emit(state.copyWith(selectedPaymentMethod: event.paymentMethod));
+  }
+
   Future<void> _onPlaceOrder(
     PlaceOrder event,
     Emitter<FoodOrderingState> emit,
@@ -157,6 +168,24 @@ class FoodOrderingBloc extends Bloc<FoodOrderingEvent, FoodOrderingState> {
 
     try {
       emit(state.copyWith(status: FoodOrderingStatus.loading));
+
+      // Handle payment based on selected method
+      if (event.paymentMethod == PaymentMethod.mastercard) {
+        emit(state.copyWith(status: FoodOrderingStatus.processingPayment));
+
+        try {
+          // Process Stripe payment
+          await PaymentManager.makePayment(state.cartTotal.toInt(), 'usd');
+        } catch (paymentError) {
+          emit(
+            state.copyWith(
+              status: FoodOrderingStatus.error,
+              errorMessage: 'Payment failed: ${paymentError.toString()}',
+            ),
+          );
+          return;
+        }
+      }
 
       // Simulate API call delay
       await Future.delayed(const Duration(milliseconds: 1000));
@@ -201,6 +230,80 @@ class FoodOrderingBloc extends Bloc<FoodOrderingEvent, FoodOrderingState> {
         state.copyWith(
           status: FoodOrderingStatus.error,
           errorMessage: 'Failed to place order: ${e.toString()}',
+        ),
+      );
+    }
+  }
+
+  Future<void> _onProcessStripePayment(
+    ProcessStripePayment event,
+    Emitter<FoodOrderingState> emit,
+  ) async {
+    try {
+      emit(state.copyWith(status: FoodOrderingStatus.loading));
+
+      // Validate card details
+      if (!PaymentManager.isValidCardNumber(event.cardNumber)) {
+        emit(
+          state.copyWith(
+            status: FoodOrderingStatus.error,
+            errorMessage: 'Invalid card number',
+          ),
+        );
+        return;
+      }
+
+      // Create payment method
+      final paymentMethod = await PaymentManager.createPaymentMethod(
+        cardNumber: event.cardNumber,
+        expiryMonth: event.expiryMonth,
+        expiryYear: event.expiryYear,
+        cvc: event.cvc,
+        name: event.cardholderName,
+        email: event.email,
+      );
+
+      // Create payment intent
+      final paymentIntent = await PaymentManager.createPaymentIntent(
+        amount: state.cartTotal,
+        currency: 'usd',
+        orderId: DateTime.now().millisecondsSinceEpoch.toString(),
+      );
+
+      // Confirm payment
+      final confirmedPayment = await PaymentManager.confirmPayment(
+        paymentIntentId: paymentIntent.id,
+        clientSecret: paymentIntent.clientSecret,
+        params: PaymentMethodParams.card(
+          paymentMethodData: PaymentMethodData(
+            billingDetails: BillingDetails(
+              name: event.cardholderName,
+              email: event.email,
+            ),
+          ),
+        ),
+      );
+
+      if (confirmedPayment.status == PaymentIntentsStatus.Succeeded) {
+        emit(
+          state.copyWith(
+            status: FoodOrderingStatus.paymentSuccessful,
+            paymentMethodId: paymentMethod.id,
+          ),
+        );
+      } else {
+        emit(
+          state.copyWith(
+            status: FoodOrderingStatus.error,
+            errorMessage: 'Payment failed. Please try again.',
+          ),
+        );
+      }
+    } catch (e) {
+      emit(
+        state.copyWith(
+          status: FoodOrderingStatus.error,
+          errorMessage: 'Payment processing failed: ${e.toString()}',
         ),
       );
     }

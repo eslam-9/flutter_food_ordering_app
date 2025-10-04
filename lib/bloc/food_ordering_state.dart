@@ -10,7 +10,10 @@ enum FoodOrderingStatus {
   error,
   orderPlaced,
   orderConfirmed,
+  processingPayment,
 }
+
+enum PaymentMethod { cashOnDelivery, mastercard }
 
 class FoodOrderingState extends Equatable {
   final FoodOrderingStatus status;
@@ -21,6 +24,7 @@ class FoodOrderingState extends Equatable {
   final Order? currentOrder;
   final String? errorMessage;
   final String selectedCategory;
+  final PaymentMethod selectedPaymentMethod;
 
   const FoodOrderingState({
     this.status = FoodOrderingStatus.initial,
@@ -31,6 +35,7 @@ class FoodOrderingState extends Equatable {
     this.currentOrder,
     this.errorMessage,
     this.selectedCategory = 'All',
+    this.selectedPaymentMethod = PaymentMethod.cashOnDelivery,
   });
 
   double get cartSubtotal {
@@ -75,6 +80,7 @@ class FoodOrderingState extends Equatable {
     currentOrder,
     errorMessage,
     selectedCategory,
+    selectedPaymentMethod,
   ];
 
   FoodOrderingState copyWith({
@@ -86,6 +92,7 @@ class FoodOrderingState extends Equatable {
     Order? currentOrder,
     String? errorMessage,
     String? selectedCategory,
+    PaymentMethod? selectedPaymentMethod,
   }) {
     return FoodOrderingState(
       status: status ?? this.status,
@@ -96,6 +103,8 @@ class FoodOrderingState extends Equatable {
       currentOrder: currentOrder ?? this.currentOrder,
       errorMessage: errorMessage ?? this.errorMessage,
       selectedCategory: selectedCategory ?? this.selectedCategory,
+      selectedPaymentMethod:
+          selectedPaymentMethod ?? this.selectedPaymentMethod,
     );
   }
 }

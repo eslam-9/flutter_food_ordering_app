@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import '../models/food_item.dart';
 import '../models/restaurant.dart';
 import '../models/order.dart';
+import '../bloc/food_ordering_state.dart';
 
 abstract class FoodOrderingEvent extends Equatable {
   const FoodOrderingEvent();
@@ -75,20 +76,65 @@ class ClearCart extends FoodOrderingEvent {
   const ClearCart();
 }
 
+// Payment Events
+class SelectPaymentMethod extends FoodOrderingEvent {
+  final PaymentMethod paymentMethod;
+
+  const SelectPaymentMethod(this.paymentMethod);
+
+  @override
+  List<Object?> get props => [paymentMethod];
+}
+
 // Order Events
 class PlaceOrder extends FoodOrderingEvent {
   final String customerName;
   final String customerPhone;
   final String deliveryAddress;
+  final PaymentMethod paymentMethod;
 
   const PlaceOrder({
     required this.customerName,
     required this.customerPhone,
     required this.deliveryAddress,
+    required this.paymentMethod,
   });
 
   @override
-  List<Object?> get props => [customerName, customerPhone, deliveryAddress];
+  List<Object?> get props => [
+    customerName,
+    customerPhone,
+    deliveryAddress,
+    paymentMethod,
+  ];
+}
+
+class ProcessStripePayment extends FoodOrderingEvent {
+  final String cardNumber;
+  final int expiryMonth;
+  final int expiryYear;
+  final String cvc;
+  final String cardholderName;
+  final String email;
+
+  const ProcessStripePayment({
+    required this.cardNumber,
+    required this.expiryMonth,
+    required this.expiryYear,
+    required this.cvc,
+    required this.cardholderName,
+    required this.email,
+  });
+
+  @override
+  List<Object?> get props => [
+    cardNumber,
+    expiryMonth,
+    expiryYear,
+    cvc,
+    cardholderName,
+    email,
+  ];
 }
 
 class UpdateOrderStatus extends FoodOrderingEvent {

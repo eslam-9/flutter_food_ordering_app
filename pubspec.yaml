@@ -13,6 +13,8 @@ dependencies:
   equatable: ^2.0.5
   google_fonts: ^6.1.0
   cached_network_image: ^3.3.0
+  flutter_stripe: ^12.0.2
+  dio: ^5.9.0
 
 dev_dependencies:
   flutter_test:
@@ -20,6 +22,14 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   bloc_test: ^9.1.5
   mocktail: ^1.0.3
+  flutter_launcher_icons: ^0.14.4
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/appIcon.png"
+
+
 
 flutter:
   uses-material-design: true
