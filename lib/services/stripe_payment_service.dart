@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:flutter_stripe/flutter_stripe.dart' as stripe;
 import 'stripe_keys.dart';
 
 abstract class PaymentManager {
   static Future<void> initialize() async {
-    Stripe.publishableKey = StripeKeys.publishableKey;
-    await Stripe.instance.applySettings();
+    stripe.Stripe.publishableKey = Stripekeys.publishablekey;
+    await stripe.Stripe.instance.applySettings();
   }
 
   static Future<void> makePayment(int price, String currency) async {
@@ -14,13 +14,13 @@ abstract class PaymentManager {
         (price * 100).toString(),
         currency,
       );
-      await Stripe.instance.initPaymentSheet(
-        paymentSheetParameters: SetupPaymentSheetParameters(
+      await stripe.Stripe.instance.initPaymentSheet(
+        paymentSheetParameters: stripe.SetupPaymentSheetParameters(
           paymentIntentClientSecret: clientSecret,
           merchantDisplayName: 'Food Delivery App',
         ),
       );
-      await Stripe.instance.presentPaymentSheet();
+      await stripe.Stripe.instance.presentPaymentSheet();
     } catch (e) {
       throw Exception(e.toString());
     }
@@ -32,7 +32,7 @@ abstract class PaymentManager {
       'https://api.stripe.com/v1/payment_intents',
       options: Options(
         headers: {
-          'Authorization': 'Bearer ${StripeKeys.secretKey}',
+          'Authorization': 'Bearer ${Stripekeys.secretkey}',
           'Content-Type': 'application/x-www-form-urlencoded',
         },
       ),
@@ -42,7 +42,7 @@ abstract class PaymentManager {
   }
 
   /// Create a payment intent using Stripe API
-  static Future<PaymentIntent> createPaymentIntent({
+  static Future<stripe.PaymentIntent> createPaymentIntent({
     required double amount,
     required String currency,
     required String orderId,
@@ -53,7 +53,7 @@ abstract class PaymentManager {
         'https://api.stripe.com/v1/payment_intents',
         options: Options(
           headers: {
-            'Authorization': 'Bearer ${StripeKeys.secretKey}',
+            'Authorization': 'Bearer ${Stripekeys.secretkey}',
             'Content-Type': 'application/x-www-form-urlencoded',
           },
         ),
@@ -64,20 +64,20 @@ abstract class PaymentManager {
           'automatic_payment_methods[enabled]': 'true',
         },
       );
-      return PaymentIntent.fromJson(response.data);
+      return stripe.PaymentIntent.fromJson(response.data);
     } catch (e) {
       throw Exception('Failed to create payment intent: $e');
     }
   }
 
   /// Confirm payment with card details using Stripe API
-  static Future<PaymentIntent> confirmPayment({
+  static Future<stripe.PaymentIntent> confirmPayment({
     required String paymentIntentId,
     required String clientSecret,
-    required PaymentMethodParams params,
+    required stripe.PaymentMethodParams params,
   }) async {
     try {
-      final paymentIntent = await Stripe.instance.confirmPayment(
+      final paymentIntent = await stripe.Stripe.instance.confirmPayment(
         paymentIntentClientSecret: clientSecret,
         data: params,
       );
@@ -88,7 +88,7 @@ abstract class PaymentManager {
   }
 
   /// Create payment method from card details using Stripe SDK
-  static Future<PaymentMethod> createPaymentMethod({
+  static Future<stripe.PaymentMethod> createPaymentMethod({
     required String cardNumber,
     required int expiryMonth,
     required int expiryYear,
@@ -97,10 +97,10 @@ abstract class PaymentManager {
     String? email,
   }) async {
     try {
-      final paymentMethod = await Stripe.instance.createPaymentMethod(
-        params: PaymentMethodParams.card(
-          paymentMethodData: PaymentMethodData(
-            billingDetails: BillingDetails(name: name, email: email),
+      final paymentMethod = await stripe.Stripe.instance.createPaymentMethod(
+        params: stripe.PaymentMethodParams.card(
+          paymentMethodData: stripe.PaymentMethodData(
+            billingDetails: stripe.BillingDetails(name: name, email: email),
           ),
         ),
       );

@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'bloc/food_ordering_bloc.dart';
-import 'services/stripe_payment_service.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

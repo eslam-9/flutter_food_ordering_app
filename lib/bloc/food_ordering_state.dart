@@ -11,6 +11,7 @@ enum FoodOrderingStatus {
   orderPlaced,
   orderConfirmed,
   processingPayment,
+  paymentSuccessful,
 }
 
 enum PaymentMethod { cashOnDelivery, mastercard }

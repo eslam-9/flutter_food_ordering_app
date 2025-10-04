@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import '../bloc/food_ordering_bloc.dart';
 import '../bloc/food_ordering_event.dart';
 import '../bloc/food_ordering_state.dart';
-import '../widgets/stripe_payment_form.dart';
 import 'order_confirmation_screen.dart';
 
 class CheckoutScreen extends StatefulWidget {
@@ -20,8 +19,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   final _phoneController = TextEditingController();
   final _addressController = TextEditingController();
 
-  String _selectedPaymentMethod = 'cash'; // 'cash' or 'stripe'
-  bool _showStripeForm = false;
+  final bool _showStripeForm = false;
 
   @override
   void dispose() {
@@ -63,8 +61,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 customerName: _nameController.text,
                 customerPhone: _phoneController.text,
                 deliveryAddress: _addressController.text,
-                paymentMethodId: state.paymentMethodId,
-                useStripePayment: true,
+                paymentMethod: PaymentMethod.mastercard,
               ),
             );
           } else if (state.status == FoodOrderingStatus.error) {
@@ -593,6 +590,40 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   fontSize: 16,
                 ),
               ),
+      ),
+    );
+  }
+
+  Widget _buildStripePaymentForm() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.grey[50],
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey[300]!),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Card Information',
+            style: GoogleFonts.poppins(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey[800],
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'For testing, use card number: 4242 4242 4242 4242',
+            style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[600]),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Any future expiry date and any 3-digit CVC',
+            style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[600]),
+          ),
+        ],
       ),
     );
   }

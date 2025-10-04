@@ -1,10 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:flutter_stripe/flutter_stripe.dart' as stripe;
 import '../models/order.dart';
 import '../models/cart_item.dart';
 import '../models/restaurant.dart';
 import '../services/mock_data_service.dart';
-import '../services/stripe_service.dart';
+import '../services/stripe_payment_service.dart';
 import 'food_ordering_event.dart';
 import 'food_ordering_state.dart';
 
@@ -253,16 +253,6 @@ class FoodOrderingBloc extends Bloc<FoodOrderingEvent, FoodOrderingState> {
         return;
       }
 
-      // Create payment method
-      final paymentMethod = await PaymentManager.createPaymentMethod(
-        cardNumber: event.cardNumber,
-        expiryMonth: event.expiryMonth,
-        expiryYear: event.expiryYear,
-        cvc: event.cvc,
-        name: event.cardholderName,
-        email: event.email,
-      );
-
       // Create payment intent
       final paymentIntent = await PaymentManager.createPaymentIntent(
         amount: state.cartTotal,
@@ -274,9 +264,9 @@ class FoodOrderingBloc extends Bloc<FoodOrderingEvent, FoodOrderingState> {
       final confirmedPayment = await PaymentManager.confirmPayment(
         paymentIntentId: paymentIntent.id,
         clientSecret: paymentIntent.clientSecret,
-        params: PaymentMethodParams.card(
-          paymentMethodData: PaymentMethodData(
-            billingDetails: BillingDetails(
+        params: stripe.PaymentMethodParams.card(
+          paymentMethodData: stripe.PaymentMethodData(
+            billingDetails: stripe.BillingDetails(
               name: event.cardholderName,
               email: event.email,
             ),
@@ -284,13 +274,8 @@ class FoodOrderingBloc extends Bloc<FoodOrderingEvent, FoodOrderingState> {
         ),
       );
 
-      if (confirmedPayment.status == PaymentIntentsStatus.Succeeded) {
-        emit(
-          state.copyWith(
-            status: FoodOrderingStatus.paymentSuccessful,
-            paymentMethodId: paymentMethod.id,
-          ),
-        );
+      if (confirmedPayment.status == stripe.PaymentIntentsStatus.Succeeded) {
+        emit(state.copyWith(status: FoodOrderingStatus.paymentSuccessful));
       } else {
         emit(
           state.copyWith(
